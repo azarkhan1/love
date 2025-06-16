@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Story</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Montserrat:wght@300;400;600&display=swap');
+        
+        :root {
+            --primary: #ff6b81;
+            --secondary: #ff4757;
+            --accent: #ff9ff3;
+            --dark: #2f3542;
+            --light: #f1f2f6;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--dark);
+            background-color: var(--light);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        
+        .dancing-font {
+            font-family: 'Dancing Script', cursive;
+        }
+        
+        .heart {
+            position: absolute;
+            pointer-events: none;
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            left: -10px;
+            top: 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background-color: var(--primary);
+            left: 0;
+            top: 0;
+        }
+        
+        .quote-slide {
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+        
+        .quote-slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .quote-slide.next {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        
+        .quote-slide.prev {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+        
+        .countdown-number {
+            transition: all 0.3s ease;
+        }
+        
+        .countdown-number.flip {
+            transform: rotateX(90deg);
+        }
+        
+        .polaroid {
+            transition: all 0.3s ease;
+            transform: rotate(-5deg);
+        }
+        
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.05);
+        }
+        
+        .polaroid::after {
+            content: '';
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            background: rgba(255, 255, 255, 0.3);
+            top: 5%;
+            left: 5%;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            z-index: -1;
+            transform: rotate(5deg);
+        }
+        
+        .music-control {
+            transition: all 0.3s ease;
+        }
+        
+        .music-control:hover {
+            transform: scale(1.1);
+        }
+        
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .heart-path {
+            fill: var(--primary);
+            opacity: 0.7;
+        }
+        
+        .section-divider {
+            height: 100px;
+            background: linear-gradient(to bottom right, transparent 49%, var(--primary) 50%), 
+                        linear-gradient(to top right, transparent 49%, var(--primary) 50%);
+            background-size: 50% 100%;
+            background-repeat: no-repeat;
+            background-position: left, right;
+        }
+        
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 0;
+                padding-right: 0;
+                text-align: center;
+            }
+            
+            .timeline-item::before {
+                left: 50%;
+                top: -10px;
+                transform: translateX(-50%);
+            }
+            
+            .timeline-item:nth-child(even) {
+                padding-left: 0;
+            }
+            
+            .section-divider {
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body class="relative">
+    <!-- Floating Hearts Background -->
+    <div class="floating-hearts" id="hearts-container"></div>
+    
+    <!-- Music Player -->
+    <div class="fixed bottom-4 right-4 z-50 bg-white rounded-full shadow-lg p-3 flex items-center">
+        <audio id="bg-music" loop>
+            <source src="Behnam.mp3" type="audio/mpeg">
+
+        </audio>
+        <button id="music-toggle" class="music-control mr-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414 1.414m2.828-9.9a9 9 0 011.414 1.414" />
+            </svg>
+        </button>
+        <span class="text-sm text-gray-600">Our Song</span>
+    </div>
+    
+    
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-40 bg-white bg-opacity-90 shadow-sm">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold dancing-font text-pink-500">Our Love Story</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="text-gray-700 hover:text-pink-500 transition">Home</a>
+                <a href="#story" class="text-gray-700 hover:text-pink-500 transition">Our Story</a>
+                <a href="#gallery" class="text-gray-700 hover:text-pink-500 transition">Gallery</a>
+                <a href="#quotes" class="text-gray-700 hover:text-pink-500 transition">Love Notes</a>
+                <a href="#countdown" class="text-gray-700 hover:text-pink-500 transition">Countdown</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden bg-white py-2 px-6 shadow-lg">
+            <a href="#home" class="block py-2 text-gray-700 hover:text-pink-500 transition">Home</a>
+            <a href="#story" class="block py-2 text-gray-700 hover:text-pink-500 transition">Our Story</a>
+            <a href="#gallery" class="block py-2 text-gray-700 hover:text-pink-500 transition">Gallery</a>
+            <a href="#quotes" class="block py-2 text-gray-700 hover:text-pink-500 transition">Love Notes</a>
+            <a href="#countdown" class="block py-2 text-gray-700 hover:text-pink-500 transition">Countdown</a>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-pink-100 to-red-100">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-full opacity-20">
+                <div class="absolute inset-0 bg-repeat" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\"><path fill=\"%23ff6b81\" d=\"M10 3.22l-.61-.6a5.5 5.5 0 0 0-7.78 7.77l7.39 7.4 7.39-7.4a5.5 5.5 0 0 0-7.78-7.77l-.61.61z\"/></svg>');"></div>
+            </div>
+        </div>
+        
+        <div class="container mx-auto px-6 text-center z-10 fade-in">
+            <h1 class="text-5xl md:text-7xl font-bold dancing-font text-pink-600 mb-4">Our Love Story</h1>
+            <p class="text-xl md:text-2xl text-gray-700 mb-8">Every love story is beautiful, but ours is my favorite</p>
+            <div class="flex justify-center space-x-4">
+                <a href="#story" class="px-8 py-3 bg-pink-500 text-white rounded-full hover:bg-pink-600 transition shadow-lg transform hover:scale-105">Our Journey</a>
+                <a href="#countdown" class="px-8 py-3 border-2 border-pink-500 text-pink-500 rounded-full hover:bg-pink-50 transition shadow-lg transform hover:scale-105">Countdown</a>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-10 left-0 right-0 flex justify-center animate-bounce">
+            <a href="#story" class="text-pink-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+            </a>
+        </div>
+    </section>
+    
+    <div class="section-divider"></div>
+    
+    <!-- Our Story Section -->
+    <section id="story" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold dancing-font text-pink-600 mb-4">Our Love Timeline</h2>
+                <div class="w-24 h-1 bg-pink-500 mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">From the first hello to forever together, these are the moments that made us</p>
+            </div>
+            
+            <div class="relative timeline pl-8 md:pl-32 lg:pl-64">
+                <div class="timeline-item relative pb-16 pl-8 fade-in">
+                    <div class="bg-pink-50 p-6 rounded-lg shadow-md">
+                        <div class="absolute -left-4 top-6 w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center text-white font-bold">1</div>
+                        <h3 class="text-xl font-bold text-pink-600 mb-2">The First Massage</h3>
+                        <p class="text-gray-600">May-16, 2025</p>
+                        <p class="mt-2 text-gray-700">"It all started with a random reaction to their Instagram story — our very first message"</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item relative pb-16 pl-8 fade-in">
+                    <div class="bg-pink-50 p-6 rounded-lg shadow-md">
+                        <div class="absolute -left-4 top-6 w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                        <h3 class="text-xl font-bold text-pink-600 mb-2">When I Saw You for the First Time</h3>
+                        <p class="text-gray-600">june- 7, 2025</p>
+                        <p class="mt-2 text-gray-700">When she sent me a photo of herself for the first time, the whole world suddenly felt different—brighter, softer, like it had been painted in new colors. I had never seen a girl so beautiful before… and from that moment, something in me changed.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item relative pb-16 pl-8 fade-in">
+                    <div class="bg-pink-50 p-6 rounded-lg shadow-md">
+                        <div class="absolute -left-4 top-6 w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center text-white font-bold">3</div>
+                        <h3 class="text-xl font-bold text-pink-600 mb-2">First Call</h3>
+                        <p class="text-gray-600">june- 5, 2025</p>
+                        <p class="mt-2 text-gray-700">The first time she called me, her voice was like music—soft, calm, and unforgettable. She only spoke for 30 seconds, but in that short moment, my heart was racing, my hands were shaking, and I felt something I’ve never felt before. That moment is carved into my memory forever</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item relative pb-16 pl-8 fade-in">
+                    <div class="bg-pink-50 p-6 rounded-lg shadow-md">
+                        <div class="absolute -left-4 top-6 w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center text-white font-bold">4</div>
+                        <h3 class="text-xl font-bold text-pink-600 mb-2">Saying "I Love You"</h3>
+                        <p class="text-gray-600">june-4, 2025</p>
+                        <p class="mt-2 text-gray-700">The first time I told her "I love you" was the most nerve-wracking moment of my life. I had never said those words to anyone before, and I was terrified she might not feel the same. That night, I couldn’t sleep—I was torn between happiness and fear. But it became a memory I’ll treasure forever, because it was the night I gave my heart away, hoping she’d hold it gently</p>
+                    </div>
+                </div>
+                
+               
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <div class="section-divider rotate-180"></div>
+    
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-20 bg-gradient-to-br from-pink-100 to-red-100">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold dancing-font text-pink-600 mb-4">Our Memories</h2>
+                <div class="w-24 h-1 bg-pink-500 mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">A picture is worth a thousand words, but our memories together are priceless</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="polaroid relative bg-white p-4 shadow-xl fade-in" style="transition-delay: 0.1s">
+                    <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Couple at beach" class="w-full h-64 object-cover">
+                    <p class="mt-2 text-center dancing-font text-xl text-gray-700">Our first vacation</p>
+                </div>
+                
+                <div class="polaroid relative bg-white p-4 shadow-xl fade-in" style="transition-delay: 0.2s">
+                    <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Couple laughing" class="w-full h-64 object-cover">
+                    <p class="mt-2 text-center dancing-font text-xl text-gray-700">Laughing together</p>
+                </div>
+                
+                <div class="polaroid relative bg-white p-4 shadow-xl fade-in" style="transition-delay: 0.3s">
+                    <img src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Proposal" class="w-full h-64 object-cover">
+                    <p class="mt-2 text-center dancing-font text-xl text-gray-700">The big question</p>
+                </div>
+                
+                <div class="polaroid relative bg-white p-4 shadow-xl fade-in" style="transition-delay: 0.4s">
+                    <img src="https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Cooking together" class="w-full h-64 object-cover">
+                    <p class="mt-2 text-center dancing-font text-xl text-gray-700">Kitchen adventures</p>
+                </div>
+                
+                <div class="polaroid relative bg-white p-4 shadow-xl fade-in" style="transition-delay: 0.5s">
+                    <img src="https://images.unsplash.com/photo-1494774157365-9e04c6720e47?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Hugging" class="w-full h-64 object-cover">
+                    <p class="mt-2 text-center dancing-font text-xl text-gray-700">Morning cuddles</p>
+                </div>
+                
+                <div class="polaroid relative bg-white p-4 shadow-xl fade-in" style="transition-delay: 0.6s">
+                    <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Dancing" class="w-full h-64 object-cover">
+                    <p class="mt-2 text-center dancing-font text-xl text-gray-700">Dancing in the rain</p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12 fade-in">
+                <button id="load-more" class="px-6 py-2 border-2 border-pink-500 text-pink-500 rounded-full hover:bg-pink-50 transition">Load More Memories</button>
+            </div>
+        </div>
+    </section>
+    
+    <div class="section-divider"></div>
+    
+    <!-- Love Quotes Section -->
+    <section id="quotes" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold dancing-font text-pink-600 mb-4">Love Notes</h2>
+                <div class="w-24 h-1 bg-pink-500 mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">Words that capture how I feel about you</p>
+            </div>
+            
+            <div class="relative overflow-hidden h-96">
+                <div class="quote-slide absolute inset-0 flex items-center justify-center p-8 text-center transition-all duration-500 active" data-index="0">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-pink-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <p class="text-2xl md:text-3xl italic text-gray-700 mb-4"></p>
+                        <p class="text-lg text-pink-500"></p>
+                    </div>
+                </div>
+                
+                <div class="quote-slide absolute inset-0 flex items-center justify-center p-8 text-center transition-all duration-500 next" data-index="1">
+                    <div>
+                       
+                        <p class="text-2xl md:text-3xl italic text-gray-700 mb-4"></p>
+                        <p class="text-lg text-pink-500"></p>
+                    </div>
+                </div>
+                
+                <div class="quote-slide absolute inset-0 flex items-center justify-center p-8 text-center transition-all duration-500 next" data-index="2">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-pink-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <p class="text-2xl md:text-3xl italic text-gray-700 mb-4">"You're the closest to heaven that I'll ever be, and I don't want to go home right now."</p>
+                        <p class="text-lg text-pink-500"></p>
+                    </div>
+                </div>
+                
+                <div class="quote-slide absolute inset-0 flex items-center justify-center p-8 text-center transition-all duration-500 next" data-index="3">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-pink-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <p class="text-2xl md:text-3xl italic text-gray-700 mb-4">"I saw that you were perfect, and so I loved you. Then I saw that you were not perfect and I loved you even more."</p>
+                        <p class="text-lg text-pink-500"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex justify-center mt-8 space-x-4">
+                <button id="prev-quote" class="p-2 rounded-full bg-pink-100 text-pink-500 hover:bg-pink-200 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <button id="next-quote" class="p-2 rounded-full bg-pink-100 text-pink-500 hover:bg-pink-200 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <div class="section-divider rotate-180"></div>
+    
+    <!-- Countdown Section -->
+    <section id="countdown" class="py-20 bg-gradient-to-br from-pink-100 to-red-100">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold dancing-font text-pink-600 mb-4">Our Next Chapter</h2>
+                <div class="w-24 h-1 bg-pink-500 mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">Counting down to our special day</p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 fade-in">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl md:text-3xl font-bold text-pink-600 mb-2 dancing-font">The Day Our Story Began</h3>
+                    <p class="text-lg text-gray-600">May-16, 2025</p>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mt-10">
+    <div class="bg-pink-50 rounded-lg p-4">
+        <div class="text-4xl md:text-6xl font-bold text-pink-600" id="elapsed-days">00</div>
+        <div class="text-gray-600 mt-2">Days</div>
+    </div>
+
+    <div class="bg-pink-50 rounded-lg p-4">
+        <div class="text-4xl md:text-6xl font-bold text-pink-600" id="elapsed-hours">00</div>
+        <div class="text-gray-600 mt-2">Hours</div>
+    </div>
+
+    <div class="bg-pink-50 rounded-lg p-4">
+        <div class="text-4xl md:text-6xl font-bold text-pink-600" id="elapsed-minutes">00</div>
+        <div class="text-gray-600 mt-2">Minutes</div>
+    </div>
+
+    <div class="bg-pink-50 rounded-lg p-4">
+        <div class="text-4xl md:text-6xl font-bold text-pink-600" id="elapsed-seconds">00</div>
+        <div class="text-gray-600 mt-2">Seconds</div>
+    </div>
+</div>
+
+<script>
+    const startDate = new Date("2025-05-16T16:00:00").getTime();
+
+    function updateElapsedTime() {
+        const now = new Date().getTime();
+        const elapsed = now - startDate;
+
+        const days = Math.floor(elapsed / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((elapsed % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+
+        document.getElementById("elapsed-days").innerText = String(days).padStart(2, '0');
+        document.getElementById("elapsed-hours").innerText = String(hours).padStart(2, '0');
+        document.getElementById("elapsed-minutes").innerText = String(minutes).padStart(2, '0');
+        document.getElementById("elapsed-seconds").innerText = String(seconds).padStart(2, '0');
+    }
+
+    setInterval(updateElapsedTime, 1000);
+    updateElapsedTime();
+</script>
+
+                
+                <div class="mt-8 text-center">
+                    <p class="text-lg text-gray-700 mb-4">I can't wait to call you my wife</p>
+                    <button id="heart-burst" class="px-6 py-2 bg-pink-500 text-white rounded-full hover:bg-pink-600 transition">Send Love</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-pink-900 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <h2 class="text-2xl font-bold dancing-font">Our Love Story</h2>
+                    <p class="mt-2 text-pink-200">Created with love and a little bit of magic</p>
+                </div>
+                
+                <div class="flex space-x-6">
+                    <a href="#" class="text-pink-200 hover:text-white transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-pink-200 hover:text-white transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-pink-200 hover:text-white transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="border-t border-pink-800 mt-8 pt-8 text-center text-pink-300">
+                <p>&copy; 2025 Our Love Story. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Music toggle
+            const musicToggle = document.getElementById('music-toggle');
+            const bgMusic = document.getElementById('bg-music');
+            let isPlaying = false;
+            
+            musicToggle.addEventListener('click', function() {
+                if (isPlaying) {
+                    bgMusic.pause();
+                    musicToggle.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414 1.414m2.828-9.9a9 9 0 011.414 1.414" />
+                        </svg>
+                    `;
+                } else {
+                    bgMusic.play();
+                    musicToggle.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                        </svg>
+                    `;
+                }
+                isPlaying = !isPlaying;
+            });
+            
+            // Scroll animations
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            fadeElements.forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Quote slider
+            const quoteSlides = document.querySelectorAll('.quote-slide');
+            const prevQuoteButton = document.getElementById('prev-quote');
+            const nextQuoteButton = document.getElementById('next-quote');
+            let currentQuoteIndex = 0;
+            
+            function showQuote(index) {
+                quoteSlides.forEach(slide => {
+                    slide.classList.remove('active', 'prev', 'next');
+                });
+                
+                quoteSlides[index].classList.add('active');
+                
+                const prevIndex = (index - 1 + quoteSlides.length) % quoteSlides.length;
+                const nextIndex = (index + 1) % quoteSlides.length;
+                
+                quoteSlides[prevIndex].classList.add('prev');
+                quoteSlides[nextIndex].classList.add('next');
+            }
+            
+            prevQuoteButton.addEventListener('click', function() {
+                currentQuoteIndex = (currentQuoteIndex - 1 + quoteSlides.length) % quoteSlides.length;
+                showQuote(currentQuoteIndex);
+            });
+            
+            nextQuoteButton.addEventListener('click', function() {
+                currentQuoteIndex = (currentQuoteIndex + 1) % quoteSlides.length;
+                showQuote(currentQuoteIndex);
+            });
+            
+            // Auto-rotate quotes
+            let quoteInterval = setInterval(() => {
+                currentQuoteIndex = (currentQuoteIndex + 1) % quoteSlides.length;
+                showQuote(currentQuoteIndex);
+            }, 8000);
+            
+            // Pause auto-rotation on hover
+            const quotesSection = document.getElementById('quotes');
+            quotesSection.addEventListener('mouseenter', () => {
+                clearInterval(quoteInterval);
+            });
+            
+            quotesSection.addEventListener('mouseleave', () => {
+                quoteInterval = setInterval(() => {
+                    currentQuoteIndex = (currentQuoteIndex + 1) % quoteSlides.length;
+                    showQuote(currentQuoteIndex);
+                }, 8000);
+            });
+            
+            // Countdown timer
+            const weddingDate = new Date('May-16, 2025 00:00:00').getTime();
+            
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = weddingDate - now;
+                
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                // Add flip animation
+                flipNumber(document.getElementById('countdown-days'), days);
+                flipNumber(document.getElementById('countdown-hours'), hours);
+                flipNumber(document.getElementById('countdown-minutes'), minutes);
+                flipNumber(document.getElementById('countdown-seconds'), seconds);
+            }
+            
+            function flipNumber(element, newNumber) {
+                const currentNumber = parseInt(element.textContent);
+                
+                if (newNumber !== currentNumber) {
+                    element.classList.add('flip');
+                    
+                    setTimeout(() => {
+                        element.textContent = newNumber < 10 ? `0${newNumber}` : newNumber;
+                        element.classList.remove('flip');
+                    }, 300);
+                }
+            }
+            
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+            
+            // Heart burst effect
+            const heartBurstButton = document.getElementById('heart-burst');
+            const heartsContainer = document.getElementById('hearts-container');
+            
+            heartBurstButton.addEventListener('click', function() {
+                createHearts(30);
+            });
+            
+            // Create floating hearts
+            function createHearts(count) {
+                for (let i = 0; i < count; i++) {
+                    setTimeout(() => {
+                        const heart = document.createElement('div');
+                        heart.className = 'heart';
+                        
+                        const size = Math.random() * 20 + 10;
+                        const duration = Math.random() * 3 + 2;
+                        const delay = Math.random() * 2;
+                        const left = Math.random() * 100;
+                        
+                        heart.style.width = `${size}px`;
+                        heart.style.height = `${size}px`;
+                        heart.style.left = `${left}%`;
+                        heart.style.animationDuration = `${duration}s`;
+                        heart.style.animationDelay = `${delay}s`;
+                        heart.style.opacity = Math.random() * 0.6 + 0.4;
+                        
+                        heart.innerHTML = `
+                            <svg viewBox="0 0 32 29.6" class="heart-path">
+                                <path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2
+                                c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
+                            </svg>
+                        `;
+                        
+                        heartsContainer.appendChild(heart);
+                        
+                        // Remove heart after animation
+                        setTimeout(() => {
+                            heart.remove();
+                        }, (duration + delay) * 1000);
+                    }, i * 100);
+                }
+            }
+            
+            // Create initial floating hearts
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    createHearts(1);
+                }, i * 2000);
+            }
+            
+            // Load more photos
+            const loadMoreButton = document.getElementById('load-more');
+            const galleryGrid = document.querySelector('#gallery .grid');
+            
+            loadMoreButton.addEventListener('click', function() {
+                const newPhotos = [
+                    {
+                        img: "https://images.unsplash.com/photo-1525134479668-1bee5c7c6845?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                        caption: "Sunday mornings"
+                    },
+                    {
+                        img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                        caption: "Winter walks"
+                    },
+                    {
+                        img: "https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                        caption: "Movie nights"
+                    }
+                ];
+                
+                newPhotos.forEach((photo, index) => {
+                    const polaroid = document.createElement('div');
+                    polaroid.className = 'polaroid relative bg-white p-4 shadow-xl fade-in';
+                    polaroid.style.transitionDelay = `${0.1 * index}s`;
+                    
+                    polaroid.innerHTML = `
+                        <img src="${photo.img}" alt="${photo.caption}" class="w-full h-64 object-cover">
+                        <p class="mt-2 text-center dancing-font text-xl text-gray-700">${photo.caption}</p>
+                    `;
+                    
+                    galleryGrid.appendChild(polaroid);
+                    
+                    // Trigger fade-in animation
+                    setTimeout(() => {
+                        observer.observe(polaroid);
+                    }, 100);
+                });
+                
+                // Disable button after loading all photos
+                if (galleryGrid.children.length >= 12) {
+                    loadMoreButton.disabled = true;
+                    loadMoreButton.textContent = 'No More Photos';
+                    loadMoreButton.classList.remove('border-pink-500', 'text-pink-500', 'hover:bg-pink-50');
+                    loadMoreButton.classList.add('border-gray-400', 'text-gray-400', 'cursor-not-allowed');
+                }
+            });
+            
+            // Smooth scrolling for navigation
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
