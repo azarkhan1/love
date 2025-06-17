@@ -6,6 +6,7 @@
   <source src="lovemp4.mp4" type="video/mp4">
 </video>
 <script>
+    
   const menuButton = document.getElementById('mobile-menu-button');
   const mobileMenu = document.getElementById('mobile-menu');
 
@@ -205,10 +206,12 @@
 <body class="relative" >
     <!-- Floating Hearts Background -->
     <div class="floating-hearts" id="hearts-container"></div>
-  <!-- Email Signup Form -->
+ <!-- Email Signup Form -->
 <div id="signup-container" class="fixed bottom-24 right-4 z-50 backdrop-blur-md bg-white/60 border border-white/30 rounded-2xl p-6 shadow-lg max-w-sm w-full font-sans text-gray-900">
   <form id="signup-form" action="https://formsubmit.co/nematnoorzai558@gmail.com" method="POST">
     <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_redirect" value="about:blank"> <!-- جلو‌گیری از رفتن به صفحه دیگه -->
+    
     <input type="text" name="name" placeholder="Your name" required class="mb-3 px-4 py-3 rounded w-full text-gray-900 text-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-400">
     <input type="email" name="email" placeholder="Your email" required class="mb-3 px-4 py-3 rounded w-full text-gray-900 text-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-400">
     <button type="submit" class="bg-pink-500 hover:bg-pink-600 text-white py-3 px-6 rounded w-full text-lg font-semibold transition duration-300">
@@ -219,11 +222,69 @@
      Thank you for signing up!
   </div>
 </div>
-    <input type="hidden" name="_redirect" value="about:blank">
+
+<!-- Script -->
+<script>
+  const form = document.getElementById('signup-form');
+  const thankYou = document.getElementById('thankyou-message');
+  const container = document.getElementById('signup-container');
+
+  // اگر ثبت‌نام قبلاً انجام شده بود
+  if (localStorage.getItem('hasSignedUp')) {
+    container.style.display = 'none';
+    document.body.style.overflow = 'auto';
+  } else {
+    // جلوگیری از اسکرول
+    document.body.style.overflow = 'hidden';
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const data = new FormData(form);
+
+    fetch(form.action, {
+      method: 'POST',
+      body: data,
+      headers: {
+        'Accept': 'application/json'
+      }
+    }).then(response => {
+      if (response.ok) {
+        // ثبت موفقیت‌آمیز
+        localStorage.setItem('hasSignedUp', 'true');
+        form.style.display = 'none';
+        thankYou.classList.remove('hidden');
+        document.body.style.overflow = 'auto';
+
+        // مخفی کردن کل فرم بعد چند ثانیه
+        setTimeout(() => {
+          let opacity = 1;
+          const fadeOut = setInterval(() => {
+            if (opacity <= 0) {
+              clearInterval(fadeOut);
+              container.style.display = 'none';
+            }
+            opacity -= 0.05;
+            container.style.opacity = opacity;
+          }, 50);
+        }, 3000);
+      } else {
+        alert(" خطا در ارسال. لطفاً دوباره تلاش کنید.");
+      }
+    }).catch(error => {
+      console.error(error);
+      alert(" مشکل در اتصال. لطفاً دوباره تلاش کنید.");
+    });
+  });
+</script>
+
+
 
 
 <!-- Script -->
 <script>
+    
   const form = document.getElementById('signup-form');
   const thankYou = document.getElementById('thankyou-message');
 
@@ -969,6 +1030,8 @@
                 });
             });
         });
+        
     </script>
+    
 </body>
 </html>
