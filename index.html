@@ -206,19 +206,51 @@
     <!-- Floating Hearts Background -->
     <div class="floating-hearts" id="hearts-container"></div>
     
-    <!-- Music Player -->
-    <div class="fixed bottom-4 right-4 z-50 bg-white rounded-full shadow-lg p-3 flex items-center" >
-        <audio id="bg-music" loop>
-            <source src="Behnam.mp3" type="audio/mpeg">
+ <!-- Music Player -->
+<style>
+  .glass-music {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 192, 203, 0.3);
+    box-shadow: 0 8px 24px rgba(255, 182, 193, 0.4);
+    transition: all 0.3s ease;
+  }
 
-        </audio>
-        <button id="music-toggle" class="music-control mr-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414 1.414m2.828-9.9a9 9 0 011.414 1.414" />
-            </svg>
-        </button>
-        <span class="text-sm text-gray-600">Our Song</span>
-    </div>
+  .glass-music:hover {
+    transform: scale(1.03);
+    box-shadow: 0 12px 32px rgba(255, 105, 180, 0.4);
+  }
+
+  .music-control svg {
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.1);
+    }
+  }
+</style>
+
+<div class="glass-music fixed bottom-4 right-4 z-50 rounded-full p-3 flex items-center">
+  <audio id="bg-music" loop>
+    <source src="Behnam.mp3" type="audio/mpeg">
+  </audio>
+  <button id="music-toggle" class="music-control mr-3">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-pink-500" fill="none" viewBox="0 0 24 24"
+      stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414 1.414m2.828-9.9a9 9 0 011.414 1.414" />
+    </svg>
+  </button>
+  <span class="text-sm text-gray-700 font-medium">Our Song</span>
+</div>
+
     
     
     
