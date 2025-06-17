@@ -205,8 +205,68 @@
 <body class="relative" >
     <!-- Floating Hearts Background -->
     <div class="floating-hearts" id="hearts-container"></div>
+  <!-- Email Signup Form -->
+<div id="signup-container" class="fixed bottom-24 right-4 z-50 backdrop-blur-md bg-white/60 border border-white/30 rounded-2xl p-6 shadow-lg max-w-sm w-full font-sans text-gray-900">
+  <form id="signup-form" action="https://formsubmit.co/nematnoorzai558@gmail.com" method="POST">
+    <input type="hidden" name="_captcha" value="false">
+    <input type="text" name="name" placeholder="Your name" required class="mb-3 px-4 py-3 rounded w-full text-gray-900 text-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-400">
+    <input type="email" name="email" placeholder="Your email" required class="mb-3 px-4 py-3 rounded w-full text-gray-900 text-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-400">
+    <button type="submit" class="bg-pink-500 hover:bg-pink-600 text-white py-3 px-6 rounded w-full text-lg font-semibold transition duration-300">
+      Sign Up
+    </button>
+  </form>
+  <div id="thankyou-message" class="hidden mt-4 text-center text-green-700 font-semibold text-xl">
+     Thank you for signing up!
+  </div>
+</div>
+
+<!-- Script -->
+<script>
+  const form = document.getElementById('signup-form');
+  const thankYou = document.getElementById('thankyou-message');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault(); // جلوگیری از رفرش
+
+    const data = new FormData(form);
+
+    fetch(form.action, {
+      method: 'POST',
+      body: data,
+      headers: {
+        'Accept': 'application/json'
+      }
+    }).then(response => {
+      if (response.ok) {
+        form.style.display = 'none';
+        thankYou.classList.remove('hidden');
+
+        // بعد از ۳ ثانیه پیام تشکر ناپدید شه
+        setTimeout(() => {
+          thankYou.style.opacity = '1';
+          let opacity = 1;
+          const fadeOut = setInterval(() => {
+            if (opacity <= 0) {
+              clearInterval(fadeOut);
+              document.getElementById('signup-container').style.display = 'none';
+            }
+            opacity -= 0.05;
+            thankYou.style.opacity = opacity;
+          }, 100);
+        }, 3000);
+      } else {
+        alert("خطا در ارسال، لطفاً دوباره تلاش کنید.");
+      }
+    }).catch(error => {
+      console.error(error);
+      alert("خطایی رخ داد.");
+    });
+  });
+</script>
+
+
     
- <!-- Music Player -->
+  <!-- Music Player -->
 <style>
   .glass-music {
     background: rgba(255, 255, 255, 0.25);
@@ -575,17 +635,6 @@
     </section>
     
     <!-- Footer -->
-      <!-- Email Signup Form -->
-<div class="fixed bottom-24 right-4 z-50 backdrop-blur-md bg-white/30 border border-white/30 rounded-2xl p-4 shadow-lg">
-  <form action="https://formsubmit.co/nematnoorzai558@gmail.com" method="POST">
-    <input type="hidden" name="_captcha" value="false">
-    <input type="text" name="name" placeholder="Your name" required class="mb-2 px-3 py-2 rounded w-full text-gray-800">
-    <input type="email" name="email" placeholder="Your email" required class="mb-2 px-3 py-2 rounded w-full text-gray-800">
-    <button type="submit" class="bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded w-full">
-      Sign Up
-    </button>
-  </form>
-</div>
     <footer class="bg-pink-900 text-white py-12">
         <div class="container mx-auto px-6">
             <div class="flex flex-col md:flex-row justify-between items-center">
@@ -613,6 +662,55 @@
                 <p>&copy; 2025 Our Love Story. All rights reserved.</p>
             </div>
         </div>
+        <style>
+  .email-subscribe {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(255, 105, 180, 0.2);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    max-width: 480px;
+    margin: 2rem auto;
+    text-align: center;
+    color: white;
+  }
+
+  .email-subscribe h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-family: 'Dancing Script', cursive;
+    color: #fff;
+  }
+
+  .email-subscribe input[type="email"] {
+    padding: 0.6rem 1rem;
+    border-radius: 9999px;
+    border: none;
+    outline: none;
+    margin-right: 0.5rem;
+    width: 65%;
+    max-width: 240px;
+  }
+
+  .email-subscribe button {
+    background-color: #ec4899;
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    padding: 0.6rem 1.2rem;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .email-subscribe button:hover {
+    background-color: #db2777;
+  }
+</style>
+
+
+
     </footer>
     
     <script>
