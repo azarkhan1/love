@@ -2,132 +2,122 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>به‌زودی...</title>
+  <title> soon..</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@600;800&display=swap" rel="stylesheet">
+  <!-- فونت فارسی شکسته -->
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@600&family=Rubik+Broken+Fax&display=swap" rel="stylesheet">
   <style>
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
     body {
       height: 100vh;
-      background: url('https://images.unsplash.com/photo-1601758123927-196f96ec5f48') no-repeat center center / cover;
+      background: radial-gradient(circle at center, #1e002b, #000);
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       font-family: 'Vazirmatn', sans-serif;
+      direction: rtl;
       overflow: hidden;
     }
 
-    .glass-box {
-      background: rgba(255, 255, 255, 0.08);
-      border: 2px solid rgba(255, 255, 255, 0.25);
-      border-radius: 25px;
-      padding: 60px 100px;
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    .container {
       text-align: center;
-      color: #fff;
-      animation: fadeIn 1.5s ease-out;
+      color: white;
+      animation: fadeIn 1.5s ease-in-out;
     }
 
-    .heart {
+    .broken-heart {
       position: relative;
       width: 120px;
       height: 100px;
       margin: 0 auto 30px auto;
     }
 
-    .heart::before,
-    .heart::after {
-      content: "";
+    .half {
       position: absolute;
       width: 60px;
       height: 100px;
-      background: #ff4d6d;
+      background: #ff2e63;
       border-radius: 60px 60px 0 0;
       top: 0;
-      box-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
+      box-shadow: 0 0 25px rgba(255, 46, 99, 0.6);
     }
 
-    .heart::before {
-      left: 60px;
-      transform: rotate(-45deg);
-      transform-origin: left bottom;
-    }
-
-    .heart::after {
+    .left {
       left: 0;
-      transform: rotate(45deg);
+      transform: rotate(45deg) translateX(-10px);
       transform-origin: right bottom;
     }
 
-    .crack {
-      position: absolute;
-      width: 4px;
-      height: 100px;
-      background: white;
-      left: 58px;
-      top: 0;
-      transform: rotate(10deg);
-      box-shadow: 0 0 5px red;
-      clip-path: polygon(0 0, 100% 0, 100% 25%, 50% 50%, 100% 75%, 100% 100%, 0 100%);
+    .right {
+      right: 0;
+      transform: rotate(-45deg) translateX(10px);
+      transform-origin: left bottom;
     }
 
-    .glass-box p {
-      font-size: 24px;
-      color: #f2f2f2;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    .crack-line {
+      position: absolute;
+      top: 25%;
+      left: 45%;
+      width: 10px;
+      height: 70%;
+      background: white;
+      clip-path: polygon(0 0, 100% 0, 80% 20%, 100% 40%, 70% 60%, 100% 80%, 80% 100%, 0 100%);
+      z-index: 2;
+    }
+
+    p {
+      font-family: 'Rubik Broken Fax', cursive;
+      font-size: 28px;
+      color: #ff8a9f;
+      text-shadow: 0 0 5px #ff2e63;
     }
 
     @keyframes fadeIn {
-      from {
+      0% {
         opacity: 0;
         transform: scale(0.9);
       }
-      to {
+      100% {
         opacity: 1;
         transform: scale(1);
       }
     }
 
     @media (max-width: 600px) {
-      .glass-box {
-        padding: 40px 30px;
-      }
-
-      .heart {
+      .broken-heart {
         width: 90px;
         height: 75px;
       }
 
-      .heart::before,
-      .heart::after {
+      .half {
         width: 45px;
         height: 75px;
       }
 
-      .crack {
-        height: 75px;
-        left: 42px;
+      .crack-line {
+        left: 43%;
+        height: 70%;
       }
 
-      .glass-box p {
-        font-size: 18px;
+      p {
+        font-size: 20px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="glass-box">
-    <div class="heart">
-      <div class="crack"></div>
+  <div class="container">
+    <div class="broken-heart">
+      <div class="half left"></div>
+      <div class="half right"></div>
+      <div class="crack-line"></div>
     </div>
-    <p>به‌زودی در دسترس خواهد بود...</p>
+    <p> به زودی...</p>
   </div>
 </body>
 </html>
