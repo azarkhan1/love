@@ -205,23 +205,125 @@
 </head>
 <body class="relative" >
     <!-- Floating Hearts Background -->
-    <div class="floating-hearts" id="hearts-container"></div>
- <!-- Email Signup Form -->
-<div id="signup-container" class="fixed bottom-24 right-4 z-50 backdrop-blur-md bg-white/60 border border-white/30 rounded-2xl p-6 shadow-lg max-w-sm w-full font-sans text-gray-900">
-  <form id="signup-form" action="https://formsubmit.co/nematnoorzai558@gmail.com" method="POST">
-    <input type="hidden" name="_captcha" value="false">
-    <input type="hidden" name="_redirect" value="about:blank"> <!-- جلو‌گیری از رفتن به صفحه دیگه -->
-    
-    <input type="text" name="name" placeholder="Your name" required class="mb-3 px-4 py-3 rounded w-full text-gray-900 text-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-400">
-    <input type="email" name="email" placeholder="Your email" required class="mb-3 px-4 py-3 rounded w-full text-gray-900 text-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-400">
-    <button type="submit" class="bg-pink-500 hover:bg-pink-600 text-white py-3 px-6 rounded w-full text-lg font-semibold transition duration-300">
-      Sign Up
+   <!-- Floating Hearts Background -->
+<div class="floating-hearts" id="hearts-container"></div>
+
+<!-- Email Signup Modal -->
+<div id="signup-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="backdrop-filter: blur(8px); display: none;">
+  <div id="signup-container" class="backdrop-blur-md bg-white/80 border border-white/30 rounded-2xl p-8 shadow-2xl max-w-md w-full font-sans text-gray-900 transform transition-all duration-300 scale-95 opacity-0">
+    <button id="close-signup" class="absolute top-4 right-4 text-gray-500 hover:text-pink-600 transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
     </button>
-  </form>
-  <div id="thankyou-message" class="hidden mt-4 text-center text-green-700 font-semibold text-xl">
-     Thank you for signing up!
+    
+    <form id="signup-form" class="space-y-4">
+      <h2 class="text-3xl font-bold text-center dancing-font text-pink-600 mb-2">Join Our Love Story</h2>
+      <p class="text-center text-gray-600 mb-6">Subscribe to get updates</p>
+      
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_redirect" value="about:blank">
+      
+      <div>
+        <input type="text" name="name" placeholder="Your name" required 
+               class="px-4 py-3 rounded-lg w-full text-gray-900 text-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent">
+      </div>
+      
+      <div>
+        <input type="email" name="email" placeholder="Your email" required 
+               class="px-4 py-3 rounded-lg w-full text-gray-900 text-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent">
+      </div>
+      
+      <button type="submit" 
+              class="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white py-3 px-6 rounded-lg w-full text-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]">
+        Sign Up
+      </button>
+    </form>
+    
+    <div id="thankyou-message" class="hidden text-center py-8">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-green-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <h3 class="text-2xl font-bold text-green-600 mb-2 dancing-font">Thank You!</h3>
+      <p class="text-gray-700">You're now part of our love story</p>
+    </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const modal = document.getElementById('signup-modal');
+  const container = document.getElementById('signup-container');
+  const form = document.getElementById('signup-form');
+  const thankYou = document.getElementById('thankyou-message');
+  const closeBtn = document.getElementById('close-signup');
+
+  // بررسی آیا کاربر قبلاً ثبت‌نام کرده
+  if (!localStorage.getItem('hasSignedUp')) {
+    // نمایش مدال با انیمیشن
+    setTimeout(() => {
+      modal.style.display = 'flex';
+      setTimeout(() => {
+        container.style.opacity = '1';
+        container.style.transform = 'scale(1)';
+      }, 10);
+      
+      // غیرفعال کردن اسکرول
+      document.body.style.overflow = 'hidden';
+    }, 2000); // تأخیر 2 ثانیه قبل از نمایش
+  }
+
+  // ارسال فرم
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const data = new FormData(form);
+    
+    fetch('https://formsubmit.co/ajax/nematnoorzai558@gmail.com', {
+      method: 'POST',
+      body: data,
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      // نمایش پیام تشکر
+      form.style.display = 'none';
+      thankYou.classList.remove('hidden');
+      
+      // ذخیره در localStorage
+      localStorage.setItem('hasSignedUp', 'true');
+      
+      // فعال کردن اسکرول بعد از 3 ثانیه
+      setTimeout(() => {
+        document.body.style.overflow = 'auto';
+        
+        // مخفی کردن مدال با انیمیشن
+        container.style.opacity = '0';
+        container.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          modal.style.display = 'none';
+        }, 300);
+      }, 3000);
+    })
+    .catch(error => {
+      alert('خطا در ارسال فرم. لطفاً دوباره تلاش کنید.');
+      console.error(error);
+    });
+  });
+
+  // دکمه بستن
+  closeBtn.addEventListener('click', function() {
+    container.style.opacity = '0';
+    container.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }, 300);
+  });
+});
+</script>
 
 <!-- Script -->
 <script>
